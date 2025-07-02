@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grocery_app/Auth/Bloc/auth_bloc.dart';
 import 'package:grocery_app/Auth/ui/login_page.dart';
 import 'package:grocery_app/Auth/ui/sign_up.dart';
 
@@ -41,8 +43,14 @@ class LandingPage extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => LoginPage()),
+                        MaterialPageRoute(
+                          builder: (_) => BlocProvider.value(
+                            value: context.read<AuthBloc>(),
+                            child: LoginPage(),
+                          ),
+                        ),
                       );
+                      
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2E7D32),
@@ -57,8 +65,13 @@ class LandingPage extends StatelessWidget {
                   const SizedBox(height: 16),
                   OutlinedButton(
                     onPressed: () {
-                       Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => SignUpPage()),
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => BlocProvider.value(
+                            value: context.read<AuthBloc>(),
+                            child: SignUpPage(),
+                          ),
+                        ),
                       );
                     },
                     style: OutlinedButton.styleFrom(
