@@ -35,7 +35,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               "email": event.email,
               "phone": event.phoneNumber,
             });
-            print("user updated");
+            
             final nameOfUser = await supabase
                 .from('profiles')
                 .select('username')
@@ -59,25 +59,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthInitialState());
     });
     on<LogInButtonClickedevent>((event, emit) async {
-      print("login button clicked");
       emit(AuthLoadingState());
-      print("loading screeen emitted");
+
       try {
-        print("try to login");
         final response = await supabase.auth.signInWithPassword(
           password: event.password,
           email: event.email,
         );
-        print("accessed supabase");
+
         if (response.user != null) {
           emit(LogInSucessState());
-          print("login success");
         } else {
-          emit(LogInFailureState());
+          emit(
+            LogInFailureState(
+              faliureMessage: "An unexpected error inside bloc",
+            ),
+          );
         }
       } catch (error) {
-        print("$error");
-        emit(LogInFailureState());
+        emit(LogInFailureState(faliureMessage: error.toString()));
       }
     });
   }

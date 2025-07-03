@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery_app/Auth/Bloc/auth_bloc.dart';
 import 'package:grocery_app/Auth/ui/dummypage.dart';
 import 'package:grocery_app/Auth/ui/login_page.dart';
+import 'package:grocery_app/common/widgets/app_loading_screen.dart';
+import 'package:grocery_app/grocery/home/ui/home_page.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -33,28 +35,23 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-  
-
     return SafeArea(
       child: BlocConsumer<AuthBloc, AuthState>(
         // bloc: context.read<AuthBloc>(),
         listener: (context, state) {
           if (state is SignUpSucessState) {
             Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => Dummypage()),
+              MaterialPageRoute(builder: (context) => HomePage()),
             );
           } else if (state is SignUpFailureState) {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(state.faliureMessage)));
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => SignUpPage()),
-            );
           }
         },
         builder: (context, state) {
           if (state is AuthLoadingState) {
-            return Scaffold(body: Center(child: CircularProgressIndicator()));
+            return AppLoadingIndicator();
           } else if (state is AuthInitialState) {
             return Scaffold(
               body: SingleChildScrollView(
@@ -151,10 +148,10 @@ class _SignUpPageState extends State<SignUpPage> {
                             SizedBox(height: 30),
                             ElevatedButton(
                               onPressed: () {
-                                print("signup button clicked");
+                                
                                 if (_formKey.currentState?.validate() ??
                                     false) {
-                                      print("form validated");
+                                 
                                   context.read<AuthBloc>().add(
                                     SignUpButtonClickedEvent(
                                       userName: _nameController.text.trim(),
