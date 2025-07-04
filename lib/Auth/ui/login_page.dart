@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery_app/Auth/Bloc/auth_bloc.dart';
-import 'package:grocery_app/Auth/ui/dummypage.dart';
+
 import 'package:grocery_app/Auth/ui/sign_up.dart';
 import 'package:grocery_app/common/widgets/app_loading_screen.dart';
+import 'package:grocery_app/grocery/App_main_view.dart';
+import 'package:grocery_app/grocery/cart/bloc/cart_bloc.dart';
+import 'package:grocery_app/grocery/home/bloc/home_bloc.dart';
 import 'package:grocery_app/grocery/home/ui/home_page.dart';
+import 'package:grocery_app/grocery/wishlist/bloc/wishlist_bloc.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -23,7 +27,9 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    context.read<AuthBloc>().add(AuthInitialEvent());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AuthBloc>().add(AuthInitialEvent());
+    });
   }
 
   @override
@@ -31,17 +37,20 @@ class _LoginPageState extends State<LoginPage> {
     return SafeArea(
       child: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
-          
           if (state is LogInFailureState) {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(state.faliureMessage)));
-            
-            
-          }
-          else if (state is LogInSucessState){
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("login sucessful")));
-            Navigator.of(context).pushReplacement(MaterialPageRoute(builder:(context) => HomePage(),));
+          } else if (state is LogInSucessState) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text("login sucessful")));
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (_) => AppMainView(userId: state.userId),
+              ),
+              (route) => false,
+            );
           }
         },
         builder: (context, state) {
@@ -168,7 +177,7 @@ class _LoginPageState extends State<LoginPage> {
               },
             );
           }
-          return SizedBox.shrink(); 
+          return SizedBox.shrink();
         },
       ),
     );

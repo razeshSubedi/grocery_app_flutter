@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-
 import 'package:grocery_app/grocery/models/data_model.dart';
-import 'package:grocery_app/grocery/home/bloc/home_bloc.dart';
+import 'package:grocery_app/grocery/wishlist/bloc/wishlist_bloc.dart';
 
 
-class ProductDetailsTile extends StatelessWidget {
-  final HomeBloc homeBloc;
-  final ProductsDataModel productsDataModel;
-  const ProductDetailsTile({
+class WishlistPageContentTile extends StatelessWidget {
+  final WishlistBloc wishlistBloc;
+  final ProductsDataModel product;
+  const WishlistPageContentTile({
     super.key,
-    required this.productsDataModel,
-    required this.homeBloc,
+    required this.product,
+    required this.wishlistBloc,
   });
 
   @override
@@ -33,7 +32,7 @@ class ProductDetailsTile extends StatelessWidget {
                 image: DecorationImage(
                   fit: BoxFit.cover,
                   image: NetworkImage(
-                    productsDataModel.imageUrl,
+                    product.imageUrl,
                   ),
                 ),
                 borderRadius: BorderRadius.circular(20)),
@@ -42,14 +41,14 @@ class ProductDetailsTile extends StatelessWidget {
             height: 10,
           ),
           Text(
-            productsDataModel.name,
+            product.name,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
           SizedBox(
             height: 5,
           ),
           Text(
-            "Category : ${productsDataModel.category}",
+            "Category : ${product.category}",
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
           ),
           SizedBox(
@@ -59,27 +58,23 @@ class ProductDetailsTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Price : \$${productsDataModel.price}",
+                "Price : \$${product.price}",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
               ),
               Row(
                 children: [
                   IconButton(
-                    onPressed: () {
-                      homeBloc.add(WishlistButtonClicked(
-                        clickedWishlistItem: productsDataModel,
-                      ));
-                    },
-                    icon: Icon(Icons.favorite_border_outlined),
-                  ),
+                      onPressed: () {},
+                      icon: Icon(
+                        Icons.shopping_cart_outlined,
+                      )),
                   IconButton(
-                    onPressed: () {
-                      homeBloc.add(CartButtonClicked(
-                        clickedCartItem: productsDataModel,
-                      ));
-                    },
-                    icon: Icon(Icons.shopping_cart_outlined),
-                  ),
+                      onPressed: () {
+                        wishlistBloc.add(WishlistItemRemovedEvent(removedItem: product));
+                      },
+                      icon: Icon(
+                        Icons.delete_outline,
+                      )),
                 ],
               )
             ],

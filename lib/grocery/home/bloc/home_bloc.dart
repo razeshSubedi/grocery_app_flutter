@@ -11,7 +11,8 @@ part 'home_event.dart';
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  HomeBloc() : super(HomeInitial()) {
+  final String userId;
+  HomeBloc({required this.userId}) : super(HomeInitial()) {
     on<HomeInitialFetchEvent>(
       (event, emit) async {
         emit(HomeLoadingState());
@@ -37,13 +38,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(NavigateToWishlistPageState());
     });
     on<CartNavigationButtonClicked>((event, emit) {
+     
       emit(NavigateToCartPageState());
+      
     });
 
     on<WishlistButtonClicked>((event, emit) {
-      print(wishlistItems.length);
+      
       wishlistItems.add(event.clickedWishlistItem);
-      print(wishlistItems.length);
+      
       emit(ProductAddedToWishlistState(message: "Product is wishlisted. "));
     },);
 

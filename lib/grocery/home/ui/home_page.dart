@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_app/Auth/ui/dummypage.dart';
+
 import 'package:grocery_app/common/widgets/app_loading_screen.dart';
+import 'package:grocery_app/grocery/cart/bloc/cart_bloc.dart';
 import 'package:grocery_app/grocery/cart/ui/cart_page.dart';
 import 'package:grocery_app/grocery/home/bloc/home_bloc.dart';
 import 'package:grocery_app/grocery/home/ui/product_details_tile.dart';
+import 'package:grocery_app/grocery/wishlist/bloc/wishlist_bloc.dart';
+import 'package:grocery_app/grocery/wishlist/ui/wishlist_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,18 +17,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final HomeBloc homeBloc = HomeBloc();
-
   @override
   void initState() {
-    homeBloc.add(HomeInitialFetchEvent());
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<HomeBloc>().add(HomeInitialFetchEvent());
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomeBloc, HomeState>(
-      bloc: homeBloc,
       listenWhen: (previous, current) {
         return current is HomeActionState;
       },
@@ -37,28 +39,40 @@ class _HomePageState extends State<HomePage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => CartPage(),
+              builder: (_) => BlocProvider.value(
+                value: context.read<CartBloc>(),
+                child: CartPage(),
+              ),
             ),
           );
         } else if (state is NavigateToWishlistPageState) {
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (_) => BlocProvider.value(
+          //       value: context.read<WishlistBloc>(),
+          //       child: WishlistPage(),
+          //     ),
+          //   ),
+
+          // );
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => Dummypage() ,
+              builder: (_) => BlocProvider.value(
+                value: context.read<WishlistBloc>(),
+                child: WishlistPage(),
+              ),
             ),
           );
         } else if (state is ProductAddedToCartState) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-            ),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
         } else if (state is ProductAddedToWishlistState) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-            ),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
         }
       },
       builder: (context, state) {
@@ -73,34 +87,37 @@ class _HomePageState extends State<HomePage> {
                 actions: [
                   IconButton(
                     onPressed: () {
-                      homeBloc.add(WishlistNavigationButtonClicked());
+                      context.read<HomeBloc>().add(
+                        WishlistNavigationButtonClicked(),
+                      );
                     },
                     icon: Icon(Icons.favorite_border_outlined),
                   ),
                   IconButton(
                     onPressed: () {
-                      homeBloc.add(CartNavigationButtonClicked());
+                      context.read<HomeBloc>().add(
+                        CartNavigationButtonClicked(),
+                      );
                     },
                     icon: Icon(Icons.shopping_cart_outlined),
                   ),
                 ],
-                title: Text("Razesh Mart"),
+                title: Text("Grocery store"),
               ),
               body: ListView.builder(
                 itemCount: sucessState.products.length,
                 itemBuilder: (context, index) {
                   return ProductDetailsTile(
-                      homeBloc: homeBloc,
-                      productsDataModel: sucessState.products[index]);
+                    homeBloc: context.read<HomeBloc>(),
+                    productsDataModel: sucessState.products[index],
+                  );
                 },
               ),
             );
 
           case HomeErrorState:
             return Scaffold(
-              body: Center(
-                child: Text("There was a Homepage loading error."),
-              ),
+              body: Center(child: Text("There was a Homepage loading error.")),
             );
 
           default:

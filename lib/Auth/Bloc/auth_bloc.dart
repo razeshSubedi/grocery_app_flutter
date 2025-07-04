@@ -41,7 +41,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                 .select('username')
                 .eq('id', userId);
 
-            emit(SignUpSucessState(name: nameOfUser.toString()));
+            emit(SignUpSucessState(name: nameOfUser.toString(),userId: userId));
           } else {
             emit(
               SignUpFailureState(
@@ -66,9 +66,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           password: event.password,
           email: event.email,
         );
+        final userId = response.user!.id;
 
         if (response.user != null) {
-          emit(LogInSucessState());
+          emit(LogInSucessState(userId: userId));
         } else {
           emit(
             LogInFailureState(
