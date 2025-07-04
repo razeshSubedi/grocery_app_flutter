@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_app/grocery/cart/bloc/cart_bloc.dart';
-import 'package:grocery_app/grocery/home/bloc/home_bloc.dart';
-import 'package:grocery_app/grocery/home/ui/home_page.dart';
 import 'package:grocery_app/grocery/wishlist/bloc/wishlist_bloc.dart';
 import 'package:grocery_app/grocery/wishlist/ui/wishlist_page_content_tile.dart';
 
@@ -35,6 +32,15 @@ class _WishlistPageState extends State<WishlistPage> {
               SnackBar(
                 content: Text(
                   "${state.removedProduct} is removed from wishlist.",
+                ),
+              ),
+            );
+          }
+          else if (state is WishlistItemCartedState){
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  "${state.cartedItemName} added to the cart.",
                 ),
               ),
             );

@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grocery_app/data/cart_items.dart';
 import 'package:grocery_app/data/wishlist_items.dart';
 import 'package:grocery_app/grocery/models/data_model.dart';
 
@@ -26,6 +27,12 @@ class WishlistBloc extends Bloc<WishlistEvent, WishlistState> {
       if (wishlistItems.isEmpty) {
         emit(WishlistEmptyState());
       }
+    });
+    
+    on<WishlistItemCartedEvent>((event, emit) {
+      cartItems.add(event.cartedItem);
+      emit(WishlistItemCartedState(cartedItemName: event.cartedItem.name));
+      
     });
   }
 }

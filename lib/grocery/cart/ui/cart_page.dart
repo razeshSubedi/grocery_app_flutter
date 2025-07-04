@@ -50,8 +50,7 @@ class _CartPageState extends State<CartPage> {
               return Center(child: CircularProgressIndicator(value: 20));
 
             case CartSucessState:
-              // final cartSucessState = state as CartSucessState;
-              // return LoadedCartPage(cartSucessState: cartSucessState, cartBloc: cartBloc);
+            
               final cartSucessState = state as CartSucessState;
               return Column(
                 children: [
@@ -90,10 +89,7 @@ class _CartPageState extends State<CartPage> {
                       Text("The cart is empty."),
                       TextButton(
                         onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => HomePage()),
-                          );
+                         Navigator.pop(context);
                         },
                         child: Text(
                           "Click here to add items.",

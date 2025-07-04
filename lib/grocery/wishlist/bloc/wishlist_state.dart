@@ -24,3 +24,9 @@ final class WishlistItemRemovedStata extends WishlistActionState{
 
 final class WishlistEmptyState extends WishlistState{}
 
+final class WishlistItemCartedState extends WishlistActionState{
+  final String cartedItemName;
+
+  WishlistItemCartedState({required this.cartedItemName});
+}
+

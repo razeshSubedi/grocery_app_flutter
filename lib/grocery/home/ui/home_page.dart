@@ -46,16 +46,7 @@ class _HomePageState extends State<HomePage> {
             ),
           );
         } else if (state is NavigateToWishlistPageState) {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (_) => BlocProvider.value(
-          //       value: context.read<WishlistBloc>(),
-          //       child: WishlistPage(),
-          //     ),
-          //   ),
-
-          // );
+         
           Navigator.push(
             context,
             MaterialPageRoute(

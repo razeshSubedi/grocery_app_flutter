@@ -64,7 +64,9 @@ class WishlistPageContentTile extends StatelessWidget {
               Row(
                 children: [
                   IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        wishlistBloc.add(WishlistItemCartedEvent(cartedItem: product));
+                      },
                       icon: Icon(
                         Icons.shopping_cart_outlined,
                       )),
