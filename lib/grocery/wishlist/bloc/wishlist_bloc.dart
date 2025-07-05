@@ -1,8 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_app/data/cart_items.dart';
-import 'package:grocery_app/data/wishlist_items.dart';
 import 'package:grocery_app/grocery/models/data_model.dart';
-
+import 'package:grocery_app/services/supabase_service.dart';
 
 import 'package:meta/meta.dart';
 
@@ -13,26 +11,31 @@ class WishlistBloc extends Bloc<WishlistEvent, WishlistState> {
   WishlistBloc() : super(WishlistInitial()) {
     on<WishlistInitialEvent>((event, emit) async {
       emit(WishlistLoadingState());
-      await Future.delayed(Duration(seconds: 1));
-      emit(WishlistPageLoadedState(wishlistedProducts: wishlistItems));
-      if (wishlistItems.isEmpty) {
+      final wishlistProducts = await SupabaseService().fetchWishlist();
+
+      if (wishlistProducts.isEmpty) {
         emit(WishlistEmptyState());
+      } else {
+        emit(WishlistPageLoadedState(wishlistedProducts: wishlistProducts));
       }
     });
 
-    on<WishlistItemRemovedEvent>((event, emit) {
-      wishlistItems.remove(event.removedItem);
+    on<WishlistItemRemovedEvent>((event, emit) async {
+      await SupabaseService().removeFromWishlist(event.removedItem.id);
       emit(WishlistItemRemovedStata(removedProduct: event.removedItem.name));
-      emit(WishlistPageLoadedState(wishlistedProducts: wishlistItems));
-      if (wishlistItems.isEmpty) {
+      final wishlistProducts = await SupabaseService().fetchWishlist();
+      
+      if (wishlistProducts.isEmpty) {
         emit(WishlistEmptyState());
       }
+      else{
+        emit(WishlistPageLoadedState(wishlistedProducts: wishlistProducts));
+      }
     });
-    
-    on<WishlistItemCartedEvent>((event, emit) {
-      cartItems.add(event.cartedItem);
+
+    on<WishlistItemCartedEvent>((event, emit) async {
+      await SupabaseService().addToCart(event.cartedItem.id);
       emit(WishlistItemCartedState(cartedItemName: event.cartedItem.name));
-      
     });
   }
 }

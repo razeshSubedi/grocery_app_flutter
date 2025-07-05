@@ -1,6 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grocery_app/data/cart_items.dart';
-import 'package:grocery_app/data/wishlist_items.dart';
 import 'package:grocery_app/grocery/models/data_model.dart';
 import 'package:grocery_app/services/supabase_service.dart';
 import 'package:meta/meta.dart';
@@ -44,8 +42,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         emit(CartSucessState(cartItems: cartProducts));
       }
     });
-    on<CartItemWishlistedEvent>((event, emit) {
-      wishlistItems.add(event.wishlistedItem);
+    on<CartItemWishlistedEvent>((event, emit) async{
+     await SupabaseService().addToWishlist(event.wishlistedItem.id);
       emit(
         CartItemWishlistedState(wishlistedItemName: event.wishlistedItem.name),
       );
