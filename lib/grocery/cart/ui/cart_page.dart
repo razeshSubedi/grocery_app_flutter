@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery_app/grocery/cart/bloc/cart_bloc.dart';
 import 'package:grocery_app/grocery/cart/ui/cart_page_product_details_tile.dart';
 
-import 'package:grocery_app/grocery/home/ui/home_page.dart';
+
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -60,7 +60,7 @@ class _CartPageState extends State<CartPage> {
                       itemBuilder: (context, index) {
                         return CartPageProductDetailsTile(
                           cartBloc: context.read<CartBloc>(),
-                          productsDataModel: cartSucessState.cartItems[index],
+                          cartItemModel: cartSucessState.cartItems[index],
                         );
                       },
                     ),

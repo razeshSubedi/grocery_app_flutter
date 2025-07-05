@@ -10,7 +10,7 @@ final class CartInitial extends CartState {}
 final class CartLoadingState extends CartState {}
 
 final class CartSucessState extends CartState {
-  final List<ProductsDataModel> cartItems;
+  final List<CartItemModel> cartItems;
 
   CartSucessState({required this.cartItems});
 }

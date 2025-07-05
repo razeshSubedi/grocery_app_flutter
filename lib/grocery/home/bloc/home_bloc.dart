@@ -4,6 +4,7 @@ import 'package:grocery_app/data/cart_items.dart';
 import 'package:grocery_app/data/grocery_data.dart';
 import 'package:grocery_app/data/wishlist_items.dart';
 import 'package:grocery_app/grocery/models/data_model.dart';
+import 'package:grocery_app/services/supabase_service.dart';
 
 
 
@@ -16,20 +17,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<HomeInitialFetchEvent>(
       (event, emit) async {
         emit(HomeLoadingState());
-        await Future.delayed(Duration(seconds: 1));
+        final products = await SupabaseService().fetchAllProducts();
         emit(
           HomeLoadingSucessState(
-            products: GroceryData.groceryProducts
-                .map(
-                  (e) => ProductsDataModel(
-                    id: e["id"],
-                    name: e["name"],
-                    imageUrl: e["imageUrl"],
-                    price: e["price"],
-                    category: e["category"],
-                  ),
-                )
-                .toList(),
+            products: products
           ),
         );
       },
@@ -43,16 +34,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       
     });
 
-    on<WishlistButtonClicked>((event, emit) {
+    on<WishlistButtonClicked>((event, emit) async {
       
-      wishlistItems.add(event.clickedWishlistItem);
+      await SupabaseService().addToWishlist(event.clickedWishlistItem.id);
       
-      emit(ProductAddedToWishlistState(message: "Product is wishlisted. "));
+      
+      
+      emit(ProductAddedToWishlistState(message: "Product is saved. "));
     },);
 
-    on<CartButtonClicked>((event, emit) {
+    on<CartButtonClicked>((event, emit) async {
+      print("product added");
 
-     cartItems.add(event.clickedCartItem);
+     await SupabaseService().addToCart(event.clickedCartItem.id);
      emit(ProductAddedToCartState(message: "Product is added to the cart."));
     },);
   }

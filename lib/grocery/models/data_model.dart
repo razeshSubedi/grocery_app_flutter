@@ -11,5 +11,12 @@ class ProductsDataModel {
     required this.imageUrl,
     required this.price,
     required this.category,
-   });
+  });
+}
+
+class CartItemModel {
+  final ProductsDataModel products;
+  final int quantity;
+
+  CartItemModel({required this.products, required this.quantity});
 }

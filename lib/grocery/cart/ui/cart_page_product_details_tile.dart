@@ -5,10 +5,10 @@ import 'package:grocery_app/grocery/models/data_model.dart';
 
 class CartPageProductDetailsTile extends StatelessWidget {
   final CartBloc cartBloc;
-  final ProductsDataModel productsDataModel;
+  final CartItemModel cartItemModel;
   const CartPageProductDetailsTile({
     super.key,
-    required this.productsDataModel,
+    required this.cartItemModel,
     required this.cartBloc,
   });
 
@@ -32,7 +32,7 @@ class CartPageProductDetailsTile extends StatelessWidget {
                 image: DecorationImage(
                   fit: BoxFit.cover,
                   image: NetworkImage(
-                    productsDataModel.imageUrl,
+                    cartItemModel.products.imageUrl,
                   ),
                 ),
                 borderRadius: BorderRadius.circular(20)),
@@ -41,14 +41,14 @@ class CartPageProductDetailsTile extends StatelessWidget {
             height: 10,
           ),
           Text(
-            productsDataModel.name,
+            cartItemModel.products.name,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
           SizedBox(
             height: 5,
           ),
           Text(
-            "Category : ${productsDataModel.category}",
+            "Category : ${cartItemModel.products.category}",
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
           ),
           SizedBox(
@@ -58,21 +58,21 @@ class CartPageProductDetailsTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Price : \$${productsDataModel.price}",
+                "Price : \$${cartItemModel.products.price}",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
               ),
               Row(
                 children: [
                   IconButton(
                       onPressed: () {
-                        cartBloc.add(CartItemWishlistedEvent(wishlistedItem: productsDataModel));
+                        cartBloc.add(CartItemWishlistedEvent(wishlistedItem: cartItemModel.products));
                       },
                       icon: Icon(
                         Icons.favorite_outline,
                       )),
                   IconButton(
                       onPressed: () {
-                        cartBloc.add(CartRemoveItemEvent(cartItemToBeDeleted: productsDataModel));
+                        cartBloc.add(CartRemoveItemEvent(cartItemToBeDeleted: cartItemModel));
                       },
                       icon: Icon(
                         Icons.delete_outline,
