@@ -1,8 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery_app/grocery/models/data_model.dart';
 import 'package:grocery_app/services/supabase_service.dart';
-
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 
 part 'wishlist_event.dart';
 part 'wishlist_state.dart';
@@ -24,11 +23,10 @@ class WishlistBloc extends Bloc<WishlistEvent, WishlistState> {
       await SupabaseService().removeFromWishlist(event.removedItem.id);
       emit(WishlistItemRemovedStata(removedProduct: event.removedItem.name));
       final wishlistProducts = await SupabaseService().fetchWishlist();
-      
+
       if (wishlistProducts.isEmpty) {
         emit(WishlistEmptyState());
-      }
-      else{
+      } else {
         emit(WishlistPageLoadedState(wishlistedProducts: wishlistProducts));
       }
     });

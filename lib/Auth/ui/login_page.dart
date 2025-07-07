@@ -4,11 +4,8 @@ import 'package:grocery_app/Auth/Bloc/auth_bloc.dart';
 
 import 'package:grocery_app/Auth/ui/sign_up.dart';
 import 'package:grocery_app/common/widgets/app_loading_screen.dart';
-import 'package:grocery_app/grocery/App_main_view.dart';
-import 'package:grocery_app/grocery/cart/bloc/cart_bloc.dart';
-import 'package:grocery_app/grocery/home/bloc/home_bloc.dart';
-import 'package:grocery_app/grocery/home/ui/home_page.dart';
-import 'package:grocery_app/grocery/wishlist/bloc/wishlist_bloc.dart';
+import 'package:grocery_app/grocery/app_main_view.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

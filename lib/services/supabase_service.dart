@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:grocery_app/grocery/models/data_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -113,5 +115,21 @@ class SupabaseService {
           ),
         )
         .toList();
+  }
+
+  void listenToProductChanges(VoidCallback onChange) {
+    final channel = Supabase.instance.client.channel('products_changes');
+
+    channel
+        .onPostgresChanges(
+          event: PostgresChangeEvent.all,
+          schema: 'public',
+          table: 'products',
+          callback: (payload) {
+            print("Product table change detected: ${payload.toString()}");
+            onChange(); // callback to refresh UI
+          },
+        )
+        .subscribe();
   }
 }

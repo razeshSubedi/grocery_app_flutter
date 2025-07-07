@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grocery_app/common/widgets/app_loading_screen.dart';
 import 'package:grocery_app/grocery/wishlist/bloc/wishlist_bloc.dart';
 import 'package:grocery_app/grocery/wishlist/ui/wishlist_page_content_tile.dart';
 
@@ -22,7 +23,11 @@ class _WishlistPageState extends State<WishlistPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Your Wishlist")),
+      appBar: AppBar(
+        title: Text("Your Wishlist"),
+        backgroundColor: Colors.blueGrey,
+      ),
+
       body: BlocConsumer<WishlistBloc, WishlistState>(
         listenWhen: (previous, current) => current is WishlistActionState,
         buildWhen: (previous, current) => current is! WishlistActionState,
@@ -35,58 +40,38 @@ class _WishlistPageState extends State<WishlistPage> {
                 ),
               ),
             );
-          }
-          else if (state is WishlistItemCartedState){
+          } else if (state is WishlistItemCartedState) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(
-                  "${state.cartedItemName} added to the cart.",
-                ),
+                content: Text("${state.cartedItemName} added to the cart."),
               ),
             );
           }
         },
         builder: (context, state) {
-          switch (state.runtimeType) {
-            case WishlistLoadingState:
-              return Scaffold(
-                body: Center(child: CircularProgressIndicator(value: 20)),
-              );
+          if (state is WishlistLoadingState) {
+            return AppLoadingIndicator();
+          } else if (state is WishlistPageLoadedState) {
+            
 
-            case WishlistPageLoadedState:
-              final wishlistLoadedState = state as WishlistPageLoadedState;
-
-              return ListView.builder(
-                itemCount: wishlistLoadedState.wishlistedProducts.length,
-                itemBuilder: (context, index) {
-                  return WishlistPageContentTile(
-                    product: wishlistLoadedState.wishlistedProducts[index],
-                    wishlistBloc: context.read<WishlistBloc>(),
-                  );
-                },
-              );
-
-            default:
-              return Scaffold(
-                body: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Wishlist is empty."),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          
-                        },
-                        child: Text(
-                          "Click to add items.",
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                      ),
-                    ],
-                  ),
+            return ListView.builder(
+              itemCount: state.wishlistedProducts.length,
+              itemBuilder: (context, index) {
+                return WishlistPageContentTile(
+                  product: state.wishlistedProducts[index],
+                  wishlistBloc: context.read<WishlistBloc>(),
+                );
+              },
+            );
+          } else {
+            return Scaffold(
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [Text("Wishlist is empty.\n ")],
                 ),
-              );
+              ),
+            );
           }
         },
       ),

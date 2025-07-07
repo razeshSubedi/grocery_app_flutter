@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grocery_app/common/widgets/app_loading_screen.dart';
 import 'package:grocery_app/grocery/cart/bloc/cart_bloc.dart';
 import 'package:grocery_app/grocery/cart/ui/cart_page_product_details_tile.dart';
-
-
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -25,7 +24,11 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Your Cart")),
+      appBar: AppBar(
+        title: Text("Your Cart"),
+        backgroundColor: Colors.blueGrey,
+      ),
+
       body: BlocConsumer<CartBloc, CartState>(
         listenWhen: (previous, current) => current is CartActionState,
         buildWhen: (previous, current) => current is! CartActionState,
@@ -45,64 +48,48 @@ class _CartPageState extends State<CartPage> {
           }
         },
         builder: (context, state) {
-          switch (state.runtimeType) {
-            case CartLoadingState:
-              return Center(child: CircularProgressIndicator(value: 20));
-
-            case CartSucessState:
+          if (state is CartLoadingState) {
+            return AppLoadingIndicator();
+          } else if (state is CartSucessState) {
             
-              final cartSucessState = state as CartSucessState;
-              return Column(
-                children: [
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: cartSucessState.cartItems.length,
-                      itemBuilder: (context, index) {
-                        return CartPageProductDetailsTile(
-                          cartBloc: context.read<CartBloc>(),
-                          cartItemModel: cartSucessState.cartItems[index],
-                        );
-                      },
-                    ),
+            return Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: state.cartItems.length,
+                    itemBuilder: (context, index) {
+                      return CartPageProductDetailsTile(
+                        cartBloc: context.read<CartBloc>(),
+                        cartItemModel: state.cartItems[index],
+                      );
+                    },
                   ),
-                  SizedBox(height: 10),
-                  Container(
-                    margin: EdgeInsets.all(8),
-                    padding: EdgeInsets.all(10),
-                    child: Row(
-                      children: [
-                        Text(
-                          "Total Price: ",
-                        ), // You can calculate and add price logic here
-                      ],
-                    ),
-                  ),
-                ],
-              );
-
-            case CartEmptyState:
-              return Scaffold(
-                body: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                SizedBox(height: 10),
+                Container(
+                  margin: EdgeInsets.all(8),
+                  padding: EdgeInsets.all(10),
+                  child: Row(
                     children: [
-                      Text("The cart is empty."),
-                      TextButton(
-                        onPressed: () {
-                         Navigator.pop(context);
-                        },
-                        child: Text(
-                          "Click here to add items.",
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                      ),
+                      Text(
+                        "Total Price: ",
+                      ), // You can calculate and add price logic here
                     ],
                   ),
                 ),
-              );
-
-            default:
-              return Center(child: Text("Error in cartpagestate"));
+              ],
+            );
+          } else if (state is CartEmptyState) {
+            return Scaffold(
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [Text("The cart is empty.")],
+                ),
+              ),
+            );
+          } else {
+            return Center(child: Text("Error in cartpagestate"));
           }
         },
       ),

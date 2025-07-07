@@ -4,7 +4,7 @@ import 'package:grocery_app/Auth/Bloc/auth_bloc.dart';
 
 import 'package:grocery_app/Auth/ui/login_page.dart';
 import 'package:grocery_app/common/widgets/app_loading_screen.dart';
-import 'package:grocery_app/grocery/App_main_view.dart';
+import 'package:grocery_app/grocery/app_main_view.dart';
 
 
 class SignUpPage extends StatefulWidget {
