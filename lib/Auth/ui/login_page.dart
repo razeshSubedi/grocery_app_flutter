@@ -6,7 +6,6 @@ import 'package:grocery_app/Auth/ui/sign_up.dart';
 import 'package:grocery_app/common/widgets/app_loading_screen.dart';
 import 'package:grocery_app/grocery/app_main_view.dart';
 
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -53,10 +52,18 @@ class _LoginPageState extends State<LoginPage> {
         builder: (context, state) {
           if (state is AuthLoadingState) {
             return AppLoadingIndicator();
-          } else if (state is AuthInitialState) {
+          }
+
+          if (state is AuthInitialState || state is LogInFailureState) {
+            String? errorMsg;
+            if (state is LogInFailureState) {
+              errorMsg = state.faliureMessage;
+            }
+
             return LayoutBuilder(
               builder: (context, constraints) {
                 return Scaffold(
+                  appBar: AppBar(title: Text("Login")),
                   resizeToAvoidBottomInset: true,
                   body: SingleChildScrollView(
                     child: ConstrainedBox(
@@ -77,6 +84,13 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                             SizedBox(height: 20),
+                            if (errorMsg != null) ...[
+                              Text(
+                                errorMsg,
+                                style: TextStyle(color: Colors.red),
+                              ),
+                              SizedBox(height: 10),
+                            ],
                             Form(
                               key: _formKey,
                               child: Column(
@@ -87,8 +101,6 @@ class _LoginPageState extends State<LoginPage> {
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(20),
                                       ),
-                                      focusColor: Colors.blue,
-                                      hoverColor: Colors.black,
                                       label: Text("Email"),
                                     ),
                                     validator: (value) {
@@ -106,8 +118,6 @@ class _LoginPageState extends State<LoginPage> {
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(20),
                                       ),
-                                      focusColor: Colors.blue,
-                                      hoverColor: Colors.black,
                                       label: Text("Password"),
                                     ),
                                     validator: (value) {
@@ -148,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text("Don't have an account?."),
+                                      Text("Don't have an account?"),
                                       TextButton(
                                         onPressed: () {
                                           Navigator.of(context).pushReplacement(
@@ -174,7 +184,8 @@ class _LoginPageState extends State<LoginPage> {
               },
             );
           }
-          return SizedBox.shrink();
+
+          return SizedBox.shrink(); // fallback
         },
       ),
     );

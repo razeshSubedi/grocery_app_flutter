@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery_app/common/widgets/app_loading_screen.dart';
 import 'package:grocery_app/grocery/account/bloc/account_bloc.dart';
+import 'package:grocery_app/main.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -28,7 +29,13 @@ class _AccountPageState extends State<AccountPage> {
         backgroundColor: Colors.blueGrey,
       ),
       body: BlocConsumer<AccountBloc, AccountState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is AccountLoggedOutState) {
+            Navigator.of(
+              context,
+            ).pushReplacement(MaterialPageRoute(builder: (context) => MyApp()));
+          }
+        },
         builder: (context, state) {
           if (state is AccountLoadedState) {
             final String fullName = state.userName.toUpperCase();
@@ -122,14 +129,20 @@ class _AccountPageState extends State<AccountPage> {
                     title: const Text("Log Out"),
                     textColor: Colors.red,
                     iconColor: Colors.red,
-                    onTap: () {},
+                    onTap: () {
+                      context.read<AccountBloc>().add(AccountLogoutEvent());
+                    },
                   ),
                 ],
               ),
             );
           } else if (state is AccountLoadingState) {
             return AppLoadingIndicator();
-          } else {
+          }
+          else if(state is AccountLoggedOutState){
+            return AppLoadingIndicator();
+          }
+           else {
             return Center(child: Text("unexpected error loading accountpage"));
           }
         },

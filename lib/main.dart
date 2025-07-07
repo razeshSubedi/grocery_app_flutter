@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grocery_app/Auth/Bloc/auth_bloc.dart';
-import 'package:grocery_app/Auth/ui/landing_page.dart';
+import 'package:grocery_app/landing/landing_page.dart';
+
 
 import 'package:grocery_app/secrets/secrets.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';

@@ -39,42 +39,92 @@ class _CartPageState extends State<CartPage> {
                 content: Text("${state.productName} is removed from the cart."),
               ),
             );
-          } else if (state is CartItemWishlistedState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("${state.wishlistedItemName} is wishlisted."),
-              ),
-            );
           }
         },
         builder: (context, state) {
           if (state is CartLoadingState) {
             return AppLoadingIndicator();
-          } else if (state is CartSucessState) {
-            
+          }
+          //else if (state is CartSucessState) {
+          //   return Column(
+          //     children: [
+          //       Expanded(
+          //         child: ListView.builder(
+          //           itemCount: state.cartItems.length,
+          //           itemBuilder: (context, index) {
+          //             return CartPageProductDetailsTile(
+          //               cartBloc: context.read<CartBloc>(),
+          //               cartItemModel: state.cartItems[index],
+          //             );
+          //           },
+          //         ),
+          //       ),
+          //       SizedBox(height: 10),
+          //       Container(
+          //         margin: EdgeInsets.all(8),
+          //         padding: EdgeInsets.all(10),
+          //         child: Row(
+          //           children: [
+          //             Text(
+          //               "Total Price: ",
+          //             ), // You can calculate and add price logic here
+          //           ],
+          //         ),
+          //       ),
+          //     ],
+          //   );
+          else if (state is CartSucessState) {
             return Column(
               children: [
                 Expanded(
+                  flex: 3,
                   child: ListView.builder(
                     itemCount: state.cartItems.length,
                     itemBuilder: (context, index) {
                       return CartPageProductDetailsTile(
                         cartBloc: context.read<CartBloc>(),
                         cartItemModel: state.cartItems[index],
+                        onQuantityChanged: () {
+                          setState(() {});
+                        },
                       );
                     },
                   ),
                 ),
-                SizedBox(height: 10),
-                Container(
-                  margin: EdgeInsets.all(8),
-                  padding: EdgeInsets.all(10),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Total Price: ",
-                      ), // You can calculate and add price logic here
-                    ],
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.blueGrey.shade50,
+                      border: Border(
+                        top: BorderSide(color: Colors.grey.shade300),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Estimated Total: \$${state.totalPrice.toStringAsFixed(2)}",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            // Add your checkout logic here
+                          },
+                          icon: Icon(Icons.payment),
+                          label: Text("Checkout"),
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: Size(double.infinity, 48),
+                            backgroundColor: Colors.blueGrey,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

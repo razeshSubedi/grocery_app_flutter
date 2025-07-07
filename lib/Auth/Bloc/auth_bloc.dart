@@ -35,13 +35,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               "email": event.email,
               "phone": event.phoneNumber,
             });
-            
+
             final nameOfUser = await supabase
                 .from('profiles')
                 .select('username')
                 .eq('id', userId);
 
-            emit(SignUpSucessState(name: nameOfUser.toString(),userId: userId));
+            emit(
+              SignUpSucessState(name: nameOfUser.toString(), userId: userId),
+            );
           } else {
             emit(
               SignUpFailureState(
@@ -62,22 +64,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthLoadingState());
 
       try {
+        
         final response = await supabase.auth.signInWithPassword(
           password: event.password,
           email: event.email,
         );
         final userId = response.user!.id;
-
+        
         if (response.user != null) {
           emit(LogInSucessState(userId: userId));
         } else {
+          
           emit(
+            
             LogInFailureState(
               faliureMessage: "An unexpected error inside bloc",
             ),
           );
         }
       } catch (error) {
+        print("error logging : ${error.toString()}");
         emit(LogInFailureState(faliureMessage: error.toString()));
       }
     });

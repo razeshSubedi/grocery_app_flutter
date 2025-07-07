@@ -11,8 +11,9 @@ final class CartLoadingState extends CartState {}
 
 final class CartSucessState extends CartState {
   final List<CartItemModel> cartItems;
+  final double totalPrice;
 
-  CartSucessState({required this.cartItems});
+  CartSucessState({required this.totalPrice, required this.cartItems});
 }
 
 final class CartItemRemovedState extends CartActionState {
@@ -23,8 +24,4 @@ final class CartItemRemovedState extends CartActionState {
 
 final class CartEmptyState extends CartState {}
 
-final class CartItemWishlistedState extends CartActionState{
-  final String wishlistedItemName;
 
-  CartItemWishlistedState({required this.wishlistedItemName});
-}

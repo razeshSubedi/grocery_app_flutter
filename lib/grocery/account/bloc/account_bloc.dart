@@ -25,5 +25,13 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
 
       emit(AccountLoadedState(userName: response['username'].toString()));
     });
+
+    on<AccountLogoutEvent>((event,emit)async{
+      emit(AccountLoadingState());
+      await Supabase.instance.client.auth.signOut();
+      print("account - logged out");
+      emit(AccountLoggedOutState());
+
+    });
   }
 }

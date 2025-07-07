@@ -17,6 +17,7 @@ class SupabaseService {
             imageUrl: e['image_url'],
             price: (e['price'] as num).toDouble(),
             category: e['category'],
+            unit:e['unit'],
           ),
         )
         .toList();
@@ -83,6 +84,7 @@ class SupabaseService {
           (e) => ProductsDataModel(
             id: e['products']['id'],
             name: e['products']['name'],
+            unit:e['products']['unit'],
             imageUrl: e['products']['image_url'],
             price: (e['products']['price'] as num).toDouble(),
             category: e['products']['category'],
@@ -99,12 +101,13 @@ class SupabaseService {
     final data = await supabase
         .from('cart')
         .select('quantity, products(*)')
-        .eq('user_id', userId);
+        .eq('user_id', userId).order('added_at');
 
     return (data as List)
         .map(
           (e) => CartItemModel(
             products: ProductsDataModel(
+              unit:e['products']['unit'], 
               id: e['products']['id'],
               name: e['products']['name'],
               imageUrl: e['products']['image_url'],
@@ -131,5 +134,26 @@ class SupabaseService {
           },
         )
         .subscribe();
+  }
+
+  Future<void> updateCartQuantity({
+    required int productId,
+    required int quantity,
+  }) async {
+    final user = supabase.auth.currentUser;
+
+    if (user == null) {
+      throw Exception('User not logged in');
+    }
+
+    final userId = user.id;
+    try {
+      await supabase.from('cart').update({'quantity': quantity}).match({
+        'user_id': userId,
+        'product_id': productId,
+      });
+    } catch (e) {
+      throw Exception('Failed to update cart: error ${e.toString()}');
+    }
   }
 }

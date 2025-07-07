@@ -11,8 +11,12 @@ class CartRemoveItemEvent extends CartEvent{
   CartRemoveItemEvent({required this.cartItemToBeDeleted});
 }
 
-class CartItemWishlistedEvent extends CartEvent{
-  final ProductsDataModel wishlistedItem;
 
-  CartItemWishlistedEvent({required this.wishlistedItem});
+class CartQuantityChangedEvent extends CartEvent {
+ final int productId;
+ final int updatedQuantity;
+
+  CartQuantityChangedEvent({required this.updatedQuantity, required this.productId});
 }
+
+class CartCheckoutEvent extends CartEvent {}

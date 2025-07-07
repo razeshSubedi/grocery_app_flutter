@@ -4,6 +4,7 @@ class ProductsDataModel {
   final String imageUrl;
   final double price;
   final String category;
+  final String unit;
 
   ProductsDataModel({
     required this.id,
@@ -11,6 +12,7 @@ class ProductsDataModel {
     required this.imageUrl,
     required this.price,
     required this.category,
+    required this.unit,
   });
 }
 

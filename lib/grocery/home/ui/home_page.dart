@@ -28,34 +28,36 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<HomeBloc, HomeState>(
-      listenWhen: (previous, current) {
-        return current is HomeActionState;
-      },
-      buildWhen: (previous, current) {
-        return current is! HomeActionState;
-      },
-      listener: (context, state) {
-        if (state is ProductAddedToCartState) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.message)));
-        } else if (state is ProductAddedToWishlistState) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.message)));
-        }
-      },
-      builder: (context, state) {
-        if (state is HomeLoadingState) {
-          return AppLoadingIndicator();
-        } else if (state is HomeLoadingSucessState) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text("Grocery store"),
-              backgroundColor: Colors.blueGrey,
-            ),
-            body: ListView.builder(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Grocery Store"),
+        backgroundColor: Colors.blueGrey,
+      ),
+
+      body: BlocConsumer<HomeBloc, HomeState>(
+        listenWhen: (previous, current) {
+          return current is HomeActionState;
+        },
+        buildWhen: (previous, current) {
+          return current is! HomeActionState;
+        },
+        listener: (context, state) {
+          if (state is ProductAddedToCartState) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
+          } else if (state is ProductAddedToWishlistState) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
+          }
+        },
+        builder: (context, state) {
+          if (state is HomeLoadingState) {
+            return AppLoadingIndicator();
+          } 
+          else if (state is HomeLoadingSucessState) {
+            return ListView.builder(
               itemCount: state.products.length,
               itemBuilder: (context, index) {
                 return ProductDetailsTile(
@@ -63,16 +65,14 @@ class _HomePageState extends State<HomePage> {
                   productsDataModel: state.products[index],
                 );
               },
-            ),
-          );
-        } else if (state is HomeErrorState) {
-          return Scaffold(
-            body: Center(child: Text("There was a Homepage loading error.")),
-          );
-        } else {
-          return Scaffold(body: Text("Error"));
-        }
-      },
+            );
+          } else if (state is HomeErrorState) {
+            return Center(child: Text("There was a Homepage loading error."));
+          } else {
+            return Center(child: Text("Error-homepage"));
+          }
+        },
+      ),
     );
   }
 }

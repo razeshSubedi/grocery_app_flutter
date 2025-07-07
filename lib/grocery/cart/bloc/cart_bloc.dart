@@ -11,42 +11,64 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   CartBloc({required this.userId}) : super(CartInitial()) {
     on<CartInitialEvent>((event, emit) async {
       emit(CartLoadingState());
+      print("trying to fetch");
       final cartProducts = await SupabaseService().fetchCart();
+
       print("Cart items fetched: ${cartProducts.length}");
+      double totalPrice = 0;
+      for (var item in cartProducts) {
+        totalPrice += item.quantity * item.products.price;
+      }
+      if (cartProducts.isEmpty) {
+        emit(CartEmptyState());
+      } else {
+        emit(CartSucessState(cartItems: cartProducts, totalPrice: totalPrice));
+      }
 
       if (cartProducts.isEmpty) {
         emit(CartEmptyState());
       } else {
-        emit(CartSucessState(cartItems: cartProducts));
+        emit(CartSucessState(cartItems: cartProducts, totalPrice: totalPrice));
       }
     });
+
     on<CartRemoveItemEvent>((event, emit) async {
       await SupabaseService().removeFromCart(
         event.cartItemToBeDeleted.products.id,
       );
-
       emit(
         CartItemRemovedState(
           productName: event.cartItemToBeDeleted.products.name,
         ),
       );
 
-      await Future.delayed(Duration(milliseconds: 150));
-
+      double totalPrice = 0;
       final cartProducts = await SupabaseService().fetchCart();
       print("Cart items fetched: ${cartProducts.length}");
-
+      for (var item in cartProducts) {
+        totalPrice += item.quantity * item.products.price;
+      }
       if (cartProducts.isEmpty) {
         emit(CartEmptyState());
       } else {
-        emit(CartSucessState(cartItems: cartProducts));
+        emit(CartSucessState(cartItems: cartProducts, totalPrice: totalPrice));
       }
     });
-    on<CartItemWishlistedEvent>((event, emit) async {
-      await SupabaseService().addToWishlist(event.wishlistedItem.id);
-      emit(
-        CartItemWishlistedState(wishlistedItemName: event.wishlistedItem.name),
+
+    on<CartQuantityChangedEvent>((event, emit) async {
+      SupabaseService().updateCartQuantity(
+        productId: event.productId,
+        quantity: event.updatedQuantity,
       );
+      
+      double totalPrice = 0;
+      final cartProducts = await SupabaseService().fetchCart();
+      print("Cart items fetched: ${cartProducts.length}");
+      for (var item in cartProducts) {
+        totalPrice += item.quantity * item.products.price;
+      }
+
+      emit(CartSucessState(cartItems: cartProducts, totalPrice: totalPrice));
     });
   }
 }

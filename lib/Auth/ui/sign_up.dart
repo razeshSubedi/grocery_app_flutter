@@ -6,7 +6,6 @@ import 'package:grocery_app/Auth/ui/login_page.dart';
 import 'package:grocery_app/common/widgets/app_loading_screen.dart';
 import 'package:grocery_app/grocery/app_main_view.dart';
 
-
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 
@@ -55,8 +54,13 @@ class _SignUpPageState extends State<SignUpPage> {
         builder: (context, state) {
           if (state is AuthLoadingState) {
             return AppLoadingIndicator();
-          } else if (state is AuthInitialState) {
+          } else if (state is AuthInitialState || state is SignUpFailureState) {
+            String? errorMsg;
+            if (state is SignUpFailureState) {
+              errorMsg = state.faliureMessage;
+            }
             return Scaffold(
+              appBar: AppBar(title: Text("Signup")),
               body: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(10),
@@ -72,6 +76,11 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                       ),
                       SizedBox(height: 20),
+
+                      if (errorMsg != null) ...[
+                        Text(errorMsg, style: TextStyle(color: Colors.red)),
+                        SizedBox(height: 10),
+                      ],
                       Form(
                         key: _formKey,
                         child: Column(
