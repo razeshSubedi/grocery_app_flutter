@@ -44,36 +44,7 @@ class _CartPageState extends State<CartPage> {
         builder: (context, state) {
           if (state is CartLoadingState) {
             return AppLoadingIndicator();
-          }
-          //else if (state is CartSucessState) {
-          //   return Column(
-          //     children: [
-          //       Expanded(
-          //         child: ListView.builder(
-          //           itemCount: state.cartItems.length,
-          //           itemBuilder: (context, index) {
-          //             return CartPageProductDetailsTile(
-          //               cartBloc: context.read<CartBloc>(),
-          //               cartItemModel: state.cartItems[index],
-          //             );
-          //           },
-          //         ),
-          //       ),
-          //       SizedBox(height: 10),
-          //       Container(
-          //         margin: EdgeInsets.all(8),
-          //         padding: EdgeInsets.all(10),
-          //         child: Row(
-          //           children: [
-          //             Text(
-          //               "Total Price: ",
-          //             ), // You can calculate and add price logic here
-          //           ],
-          //         ),
-          //       ),
-          //     ],
-          //   );
-          else if (state is CartSucessState) {
+          } else if (state is CartSucessState) {
             return Column(
               children: [
                 Expanded(

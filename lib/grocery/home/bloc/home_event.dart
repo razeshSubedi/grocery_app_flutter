@@ -17,6 +17,10 @@ class CartButtonClicked extends HomeEvent {
   CartButtonClicked({required this.clickedCartItem});
 }
 
-class WishlistNavigationButtonClicked extends HomeEvent {}
 
-class CartNavigationButtonClicked extends HomeEvent {}
+class HomeSearchEvent extends HomeEvent {
+  final String query;
+  HomeSearchEvent({required this.query});
+}
+
+

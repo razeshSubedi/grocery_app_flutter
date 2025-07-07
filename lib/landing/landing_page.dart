@@ -43,27 +43,70 @@ class LandingPage extends StatelessWidget {
           }
 
           final products = snapshot.data!;
-          return ListView.builder(
-            itemCount: products.length,
-            itemBuilder: (context, index) {
-              return ProductTileForLanding(
-                productsDataModel: products[index],
-                onRedirect: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                ),
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (_) => BlocProvider.value(
-                //       value: context.read<AuthBloc>(),
-                //       child: LoginPage(),
-                //     ),
-                //   ),
-                // ),
+          final categorizedProducts = <String, List<ProductsDataModel>>{};
+          for (var product in products) {
+            categorizedProducts
+                .putIfAbsent(product.category, () => [])
+                .add(product);
+          }
+          return ListView(
+            padding: const EdgeInsets.all(8),
+            children: categorizedProducts.entries.map((entry) {
+              final category = entry.key;
+              final products = entry.value;
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8.0,
+                      horizontal: 12,
+                    ),
+                    child: Text(
+                      category,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(
+                    height: 240,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: products.length,
+                      itemBuilder: (context, index) {
+                        return ProductTileForLanding(
+                          onRedirect: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => LoginPage()),
+                          ),
+
+                          productsDataModel: products[index],
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 12),
+                ],
               );
-            },
+            }).toList(),
           );
+          // return ListView.builder(
+          //   itemCount: products.length,
+          //   itemBuilder: (context, index) {
+          //     return ProductTileForLanding(
+          //       productsDataModel: products[index],
+          //       onRedirect: () => Navigator.push(
+          //         context,
+          //         MaterialPageRoute(builder: (context) => LoginPage()),
+          //       ),
+
+          //     );
+          //   },
+          // );
         },
       ),
     );

@@ -6,19 +6,16 @@ import 'package:grocery_app/services/supabase_service.dart';
 part 'home_event.dart';
 part 'home_state.dart';
 
+List<ProductsDataModel> _allProducts = [];
+
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final String userId;
   HomeBloc({required this.userId}) : super(HomeInitial()) {
     on<HomeInitialFetchEvent>((event, emit) async {
       emit(HomeLoadingState());
       final products = await SupabaseService().fetchAllProducts();
+      _allProducts = products;
       emit(HomeLoadingSucessState(products: products));
-    });
-    on<WishlistNavigationButtonClicked>((event, emit) {
-      emit(NavigateToWishlistPageState());
-    });
-    on<CartNavigationButtonClicked>((event, emit) {
-      emit(NavigateToCartPageState());
     });
 
     on<WishlistButtonClicked>((event, emit) async {
@@ -32,6 +29,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
       await SupabaseService().addToCart(event.clickedCartItem.id);
       emit(ProductAddedToCartState(message: "Product is added to the cart."));
+    });
+    on<HomeSearchEvent>((event, emit) {
+      final query = event.query.toLowerCase();
+      final filtered = _allProducts
+          .where((p) => p.name.toLowerCase().contains(query))
+          .toList();
+      emit(HomeLoadingSucessState(products: filtered));
     });
   }
 }
