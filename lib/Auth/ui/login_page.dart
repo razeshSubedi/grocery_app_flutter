@@ -185,7 +185,7 @@ class _LoginPageState extends State<LoginPage> {
             );
           }
 
-          return SizedBox.shrink(); // fallback
+          return Scaffold(); // fallback
         },
       ),
     );

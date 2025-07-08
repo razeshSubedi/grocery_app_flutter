@@ -94,19 +94,6 @@ class LandingPage extends StatelessWidget {
               );
             }).toList(),
           );
-          // return ListView.builder(
-          //   itemCount: products.length,
-          //   itemBuilder: (context, index) {
-          //     return ProductTileForLanding(
-          //       productsDataModel: products[index],
-          //       onRedirect: () => Navigator.push(
-          //         context,
-          //         MaterialPageRoute(builder: (context) => LoginPage()),
-          //       ),
-
-          //     );
-          //   },
-          // );
         },
       ),
     );

@@ -211,7 +211,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
             );
           } else {
-            return Scaffold(body: Center(child: Text("Some error occured")));
+            return Scaffold();
           }
         },
       ),

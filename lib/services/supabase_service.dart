@@ -17,13 +17,13 @@ class SupabaseService {
             imageUrl: e['image_url'],
             price: (e['price'] as num).toDouble(),
             category: e['category'],
-            unit:e['unit'],
+            unit: e['unit'],
           ),
         )
         .toList();
   }
 
-  // Get current user ID
+  // current user ID
   String? getCurrentUserId() {
     final userId = Supabase.instance.client.auth.currentUser?.id;
     print(userId);
@@ -84,7 +84,7 @@ class SupabaseService {
           (e) => ProductsDataModel(
             id: e['products']['id'],
             name: e['products']['name'],
-            unit:e['products']['unit'],
+            unit: e['products']['unit'],
             imageUrl: e['products']['image_url'],
             price: (e['products']['price'] as num).toDouble(),
             category: e['products']['category'],
@@ -101,13 +101,14 @@ class SupabaseService {
     final data = await supabase
         .from('cart')
         .select('quantity, products(*)')
-        .eq('user_id', userId).order('added_at');
+        .eq('user_id', userId)
+        .order('added_at');
 
     return (data as List)
         .map(
           (e) => CartItemModel(
             products: ProductsDataModel(
-              unit:e['products']['unit'], 
+              unit: e['products']['unit'],
               id: e['products']['id'],
               name: e['products']['name'],
               imageUrl: e['products']['image_url'],
@@ -130,7 +131,7 @@ class SupabaseService {
           table: 'products',
           callback: (payload) {
             print("Product table change detected: ${payload.toString()}");
-            onChange(); // callback to refresh UI
+            onChange(); //refresh UI
           },
         )
         .subscribe();
